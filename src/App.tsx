@@ -3,9 +3,11 @@ import { useState } from "react";
 import { Container } from "@mui/material";
 import { ReportList } from "./features/report-list/ReportList";
 import { Header } from "./components/header/Header";
+import { CreateReportModal } from "./components/create-report-modal/CreateReportModal";
 
 function App() {
   const [search, setSearch] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <Container
@@ -20,8 +22,14 @@ function App() {
     >
       <Header
         onSearchChange={setSearch}
-        onCreateClick={() => console.log("Open create report modal")}
+        onCreateClick={() => setIsModalOpen(true)}
       />
+
+      <CreateReportModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+
       <ReportList search={search} />
     </Container>
   );

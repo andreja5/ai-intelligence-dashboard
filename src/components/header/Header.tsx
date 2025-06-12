@@ -35,7 +35,9 @@ export const Header = ({ onSearchChange, onCreateClick }: Props) => {
         flexDirection: { xs: "column", sm: "row" },
       }}
     >
-      <Typography variant="h4">Intelligence Dashboard</Typography>
+      <Typography variant="h4" fontWeight={600}>
+        Intelligence Dashboard
+      </Typography>
 
       <Stack
         spacing={2}
@@ -44,7 +46,6 @@ export const Header = ({ onSearchChange, onCreateClick }: Props) => {
         justifyContent={{ xs: "center", lg: "left" }}
       >
         <TextField
-          focused
           size="small"
           color="primary"
           variant="outlined"

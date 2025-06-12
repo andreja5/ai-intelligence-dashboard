@@ -8,6 +8,7 @@ import {
 } from "react";
 import type { Report, ReportContextType } from "../../types/Report";
 import { initializeSampleReports } from "../../utils/initReports";
+import { mockFetchReports } from "../../utils/mockFetch";
 
 const LOCAL_KEY = "ai-dashboard-reports";
 const INIT_KEY = "reportsInitialized";
@@ -19,14 +20,17 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);
 
   const addReport = useCallback((report: Omit<Report, "id" | "createdAt">) => {
-    setReports((prev) => [
-      ...prev,
-      {
-        ...report,
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-      },
-    ]);
+    const newReport: Report = {
+      ...report,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+    };
+
+    setReports((prev) => {
+      const updated = [...prev, newReport];
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
+      return updated;
+    });
   }, []);
 
   const updateReport = useCallback((id: string, updates: Partial<Report>) => {
@@ -66,7 +70,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
 
         setReports(sampleReports);
       } else {
-        const fetchedReports: Report[] = stored ? JSON.parse(stored) : [];
+        const fetchedReports: Report[] = await mockFetchReports();
 
         setReports(fetchedReports);
       }
@@ -96,7 +100,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useReports = (): ReportContextType => {
+export const useReportContext = (): ReportContextType => {
   const context = useContext(ReportContext);
 
   if (!context)
