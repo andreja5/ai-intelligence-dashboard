@@ -67,7 +67,11 @@ export const ReportCard = ({
           <Typography variant="h6">{report.title}</Typography>
 
           {shouldTruncate && (
-            <Button size="small" onClick={() => setExpanded((prev) => !prev)}>
+            <Button
+              size="small"
+              sx={{ mr: "10px" }}
+              onClick={() => setExpanded((prev) => !prev)}
+            >
               {expanded ? "Show Less" : "Read More"}
             </Button>
           )}

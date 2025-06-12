@@ -8,9 +8,10 @@ export interface Report {
 export interface ReportContextType {
   loading: boolean;
   reports: Report[] | undefined;
-  addReport: (report: Omit<Report, "id" | "createdAt">) => void;
-  updateReport: (report: Report) => void;
   deleteReport: (id: string) => void;
-  reorderReports: (ids: string[]) => void;
   summarizeReport: (id: string) => void;
+  updateReport: (report: Report) => void;
+  reorderReports: (ids: string[]) => void;
+  setReports: (reports: Report[]) => void;
+  addReport: (report: Omit<Report, "id" | "createdAt">) => void;
 }

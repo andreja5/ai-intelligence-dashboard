@@ -10,8 +10,11 @@ import type { Report, ReportContextType } from "../../types/Report";
 import { initializeSampleReports } from "../../utils/initReports";
 import { mockFetchReports } from "../../utils/mockFetch";
 
-const LOCAL_KEY = "ai-dashboard-reports";
-const INIT_KEY = "reportsInitialized";
+const LOCAL_KEY =
+  import.meta.env.VITE_LOCAL_STORAGE_KEY || "ai-dashboard-reports";
+const INIT_KEY =
+  import.meta.env.VITE_LOCAL_STORAGE_INIT_KEY ||
+  "ai-dashboard-reports-initialized";
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
 
@@ -99,14 +102,15 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
   }, [fetchReports]);
 
   const value = {
+    loading,
     reports,
     addReport,
+    setReports,
     updateReport,
     deleteReport,
     reorderReports,
     fetchReports,
     summarizeReport,
-    loading,
   };
 
   return (
