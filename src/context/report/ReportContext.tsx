@@ -4,32 +4,19 @@ import {
   useState,
   useCallback,
   type ReactNode,
+  useEffect,
 } from "react";
 import type { Report, ReportContextType } from "../../types/Report";
+import { initializeSampleReports } from "../../utils/initReports";
+
+const LOCAL_KEY = "ai-dashboard-reports";
+const INIT_KEY = "reportsInitialized";
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
 
 export const ReportProvider = ({ children }: { children: ReactNode }) => {
-  const [reports, setReports] = useState<Report[]>([
-    {
-      id: crypto.randomUUID(),
-      title: "First Sample Report",
-      content: "<p>This is a sample report content.</p>",
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "Second Sample Report",
-      content: "<p>This is a second sample report content.</p>",
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "Third Sample Report",
-      content: "<p>This is a third sample report content.</p>",
-      createdAt: new Date().toISOString(),
-    },
-  ]);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const addReport = useCallback((report: Omit<Report, "id" | "createdAt">) => {
     setReports((prev) => [
@@ -49,7 +36,12 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const deleteReport = useCallback((id: string) => {
-    setReports((prev) => prev.filter((r) => r.id !== id));
+    setReports((prev) => {
+      const updated = prev.filter((r) => r.id !== id);
+      localStorage.setItem("ai-dashboard-reports", JSON.stringify(updated));
+
+      return updated;
+    });
   }, []);
 
   const reorderReports = useCallback((ids: string[]) => {
@@ -58,12 +50,45 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     );
   }, []);
 
+  const fetchReports = useCallback(async () => {
+    // Improvements: Add caching
+    setLoading(true);
+    try {
+      const stored = localStorage.getItem(LOCAL_KEY);
+      const isInitialized = localStorage.getItem(INIT_KEY) === "true";
+
+      // Simulate fetching from an API
+      if (!stored && !isInitialized) {
+        const sampleReports: Report[] = initializeSampleReports();
+
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(sampleReports));
+        localStorage.setItem(INIT_KEY, "true");
+
+        setReports(sampleReports);
+      } else {
+        const fetchedReports: Report[] = stored ? JSON.parse(stored) : [];
+
+        setReports(fetchedReports);
+      }
+    } catch (error) {
+      console.error("Failed to fetch reports:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
+
   const value = {
     reports,
     addReport,
     updateReport,
     deleteReport,
     reorderReports,
+    fetchReports,
+    loading,
   };
 
   return (

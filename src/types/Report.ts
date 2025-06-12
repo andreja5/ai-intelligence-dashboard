@@ -11,4 +11,5 @@ export interface ReportContextType {
   updateReport: (id: string, updates: Partial<Report>) => void;
   deleteReport: (id: string) => void;
   reorderReports: (ids: string[]) => void;
+  loading: boolean;
 }

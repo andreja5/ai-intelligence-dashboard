@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { useReports } from "../../context/report/ReportContext";
 import { ReportCard } from "../../components/report-card/ReportCard";
 import { useCallback, useMemo } from "react";
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const ReportList = ({ search }: Props) => {
-  const { reports, deleteReport } = useReports();
+  const { reports, deleteReport, loading } = useReports();
   const debouncedSearch = useDebounce(search, 300);
 
   const handleEdit = useCallback((report: any) => {
@@ -36,16 +36,22 @@ export const ReportList = ({ search }: Props) => {
         Reports
       </Typography>
       <Grid container spacing={2}>
-        {filteredReports.map((report) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }} key={report.id}>
-            <ReportCard
-              report={report}
-              onEdit={handleEdit}
-              onDelete={deleteReport}
-              onSummarize={handleSummarize}
-            />
-          </Grid>
-        ))}
+        {loading ? (
+          <Box display="flex" justifyContent="center" mt={4}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          filteredReports.map((report) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }} key={report.id}>
+              <ReportCard
+                report={report}
+                onEdit={handleEdit}
+                onDelete={deleteReport}
+                onSummarize={handleSummarize}
+              />
+            </Grid>
+          ))
+        )}
       </Grid>
     </Box>
   );
