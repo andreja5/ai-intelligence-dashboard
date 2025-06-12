@@ -33,10 +33,18 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
-  const updateReport = useCallback((id: string, updates: Partial<Report>) => {
-    setReports((prev) =>
-      prev?.map((r) => (r.id === id ? { ...r, ...updates } : r))
-    );
+  const updateReport = useCallback((updatedReport: Report) => {
+    setReports((prevReports) => {
+      if (!prevReports) return prevReports;
+
+      const updatedReports = prevReports.map((report) =>
+        report.id === updatedReport.id ? updatedReport : report
+      );
+
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(updatedReports));
+
+      return updatedReports;
+    });
   }, []);
 
   const deleteReport = useCallback((id: string) => {

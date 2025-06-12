@@ -6,17 +6,21 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useReportContext } from "../../context/report/ReportContext";
 import MyEditor from "../my-editor/MyEditor";
+import type { Report } from "../../types/Report";
 
 interface Props {
   open: boolean;
   onClose: () => void;
+  report?: Report;
+  onSave?: (report: Report) => void;
 }
 
-export const CreateReportModal = ({ open, onClose }: Props) => {
+export const CreateReportModal = ({ open, onClose, report, onSave }: Props) => {
   const { addReport } = useReportContext();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
@@ -25,22 +29,38 @@ export const CreateReportModal = ({ open, onClose }: Props) => {
 
     if (!title.trim()) return;
 
-    const newReport = {
-      id: crypto.randomUUID(),
-      title: title.trim(),
-      content,
-      createdAt: new Date().toISOString(),
-    };
+    if (report) {
+      // Edit mode
+      const updatedReport: Report = {
+        ...report,
+        title: title.trim(),
+        content,
+      };
+      if (onSave) {
+        onSave(updatedReport);
+      }
+    } else {
+      // Create mode
+      const newReport: Report = {
+        id: crypto.randomUUID(),
+        title: title.trim(),
+        content,
+        createdAt: new Date().toISOString(),
+      };
+      addReport(newReport);
+    }
 
-    addReport(newReport);
     onClose();
-    setTitle("");
-    setContent("");
   };
+
+  useEffect(() => {
+    setTitle(report?.title || "");
+    setContent(report?.content || "");
+  }, [report, open]);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Create New Report</DialogTitle>
+      <DialogTitle>{report ? "Edit Report" : "Create New Report"}</DialogTitle>
 
       <form onSubmit={handleSubmit}>
         <DialogContent dividers>

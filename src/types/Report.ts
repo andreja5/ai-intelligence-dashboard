@@ -6,9 +6,9 @@ export interface Report {
 }
 
 export interface ReportContextType {
-  reports: Report[];
+  reports: Report[] | undefined;
   addReport: (report: Omit<Report, "id" | "createdAt">) => void;
-  updateReport: (id: string, updates: Partial<Report>) => void;
+  updateReport: (report: Report) => void;
   deleteReport: (id: string) => void;
   reorderReports: (ids: string[]) => void;
   loading: boolean;
