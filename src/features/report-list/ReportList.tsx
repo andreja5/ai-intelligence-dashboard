@@ -2,6 +2,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useReports } from "../../context/report/ReportContext";
 import { ReportCard } from "../../components/report-card/ReportCard";
 import { useCallback, useMemo } from "react";
+import { useDebounce } from "../../hooks/useDebounce";
 
 interface Props {
   search: string;
@@ -9,6 +10,7 @@ interface Props {
 
 export const ReportList = ({ search }: Props) => {
   const { reports, deleteReport } = useReports();
+  const debouncedSearch = useDebounce(search, 300);
 
   const handleEdit = useCallback((report: any) => {
     console.log("Edit:", report);
@@ -19,10 +21,14 @@ export const ReportList = ({ search }: Props) => {
   }, []);
 
   const filteredReports = useMemo(() => {
-    return reports.filter((r) =>
-      r.title.toLowerCase().includes(search.toLowerCase())
+    if (!debouncedSearch.trim()) return reports;
+
+    const query = debouncedSearch.trim().toLowerCase();
+
+    return reports.filter((report) =>
+      report.title.toLowerCase().includes(query)
     );
-  }, [reports, search]);
+  }, [reports, debouncedSearch]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
