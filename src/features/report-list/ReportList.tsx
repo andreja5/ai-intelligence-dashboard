@@ -3,6 +3,12 @@ import { useReportContext } from "../../context/report/ReportContext";
 import { ReportCard } from "../../components/report-card/ReportCard";
 import { useMemo } from "react";
 import { useDebounce } from "../../hooks/useDebounce";
+import { useSortableList } from "../../hooks/useSortableList";
+import { SortableItemWrapper } from "../../components/sortable-item-wrapper/SortableItemWrapper";
+import { DragOverlay } from "@dnd-kit/core";
+
+const LOCAL_KEY =
+  import.meta.env.VITE_LOCAL_STORAGE_KEY || "ai-dashboard-reports";
 
 interface Props {
   search: string;
@@ -10,7 +16,7 @@ interface Props {
 
 export const ReportList = ({ search }: Props) => {
   const debouncedSearch = useDebounce(search, 300);
-  const { reports, loading } = useReportContext();
+  const { reports, loading, setReports } = useReportContext();
 
   const filteredReports = useMemo(() => {
     if (!debouncedSearch.trim()) return reports;
@@ -21,6 +27,20 @@ export const ReportList = ({ search }: Props) => {
       report.title.toLowerCase().includes(query)
     );
   }, [reports, debouncedSearch]);
+
+  const { DndWrapper, activeId } = useSortableList({
+    items: reports || [],
+    getId: (r) => r.id,
+    onReorder: (newReports) => {
+      setReports(newReports);
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(newReports));
+    },
+  });
+
+  const activeReport = useMemo(() => {
+    if (!activeId) return null;
+    return reports?.find((report) => report.id === activeId) || null;
+  }, [activeId, reports]);
 
   return (
     <Box sx={{ flexGrow: 1, py: 4, px: 2 }}>
@@ -44,13 +64,25 @@ export const ReportList = ({ search }: Props) => {
           </Typography>
         </Box>
       ) : (
-        <Grid container spacing={2}>
-          {filteredReports?.map((report) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }} key={report.id}>
-              <ReportCard report={report} />
-            </Grid>
-          ))}
-        </Grid>
+        <DndWrapper>
+          <Grid container spacing={2}>
+            {filteredReports?.map((report) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }} key={report.id}>
+                <SortableItemWrapper id={report.id}>
+                  <ReportCard report={report} />
+                </SortableItemWrapper>
+              </Grid>
+            ))}
+          </Grid>
+
+          <DragOverlay adjustScale={false}>
+            {activeReport ? (
+              <div style={{ width: "100%" }}>
+                <ReportCard report={activeReport} />
+              </div>
+            ) : null}
+          </DragOverlay>
+        </DndWrapper>
       )}
     </Box>
   );
