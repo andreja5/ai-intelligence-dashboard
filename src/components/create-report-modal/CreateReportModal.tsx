@@ -15,11 +15,10 @@ interface Props {
   open: boolean;
   onClose: () => void;
   report?: Report;
-  onSave?: (report: Report) => void;
 }
 
-export const CreateReportModal = ({ open, onClose, report, onSave }: Props) => {
-  const { addReport } = useReportContext();
+export const CreateReportModal = ({ open, onClose, report }: Props) => {
+  const { addReport, updateReport } = useReportContext();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -36,9 +35,8 @@ export const CreateReportModal = ({ open, onClose, report, onSave }: Props) => {
         title: title.trim(),
         content,
       };
-      if (onSave) {
-        onSave(updatedReport);
-      }
+
+      updateReport(updatedReport);
     } else {
       // Create mode
       const newReport: Report = {

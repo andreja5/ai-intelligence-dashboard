@@ -19,6 +19,10 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
   const [reports, setReports] = useState<Report[] | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
+  const summarizeReport = useCallback((id: string) => {
+    // trigger summary logic here or in modal
+  }, []);
+
   const addReport = useCallback((report: Omit<Report, "id" | "createdAt">) => {
     const newReport: Report = {
       ...report,
@@ -101,6 +105,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     deleteReport,
     reorderReports,
     fetchReports,
+    summarizeReport,
     loading,
   };
 

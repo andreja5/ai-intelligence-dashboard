@@ -13,26 +13,25 @@ import SummarizeIcon from "@mui/icons-material/Summarize";
 import type { Report } from "../../types/Report";
 import { useState } from "react";
 import DOMPurify from "dompurify";
+import { useReportContext } from "../../context/report/ReportContext";
+import { useModal } from "../../context/modal/ModalContext";
 
 interface Props {
   report: Report;
-  onEdit: (report: Report) => void;
-  onDelete: (id: string) => void;
-  onSummarize: (report: Report) => void;
   maxPreviewChars?: number; // Maximum characters to define if truncation is needed
   collapsedHeight?: number; // Height of the card when collapsed
 }
 
 export const ReportCard = ({
   report,
-  onEdit,
-  onDelete,
-  onSummarize,
   maxPreviewChars = 20,
   collapsedHeight = 80,
 }: Props) => {
   const [expanded, setExpanded] = useState(false);
   const cleanHTML = DOMPurify.sanitize(report.content);
+
+  const { openModal } = useModal();
+  const { deleteReport, summarizeReport } = useReportContext();
 
   const textOnly =
     new DOMParser().parseFromString(cleanHTML, "text/html").body.textContent ||
@@ -91,13 +90,13 @@ export const ReportCard = ({
 
       <CardActions sx={{ justifyContent: "space-between" }}>
         <Box sx={{ minWidth: "fit-content" }}>
-          <IconButton onClick={() => onEdit(report)}>
+          <IconButton onClick={() => openModal("edit", report)}>
             <EditIcon />
           </IconButton>
-          <IconButton onClick={() => onSummarize(report)}>
+          <IconButton onClick={() => summarizeReport(report.id)}>
             <SummarizeIcon />
           </IconButton>
-          <IconButton onClick={() => onDelete(report.id)}>
+          <IconButton onClick={() => deleteReport(report.id)}>
             <DeleteIcon />
           </IconButton>
         </Box>

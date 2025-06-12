@@ -11,14 +11,15 @@ import AddIcon from "@mui/icons-material/Add";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { useThemeMode } from "../../context/theme/ThemeContext";
+import { useModal } from "../../context/modal/ModalContext";
 
 interface Props {
   onSearchChange: (value: string) => void;
-  onCreateClick: () => void;
 }
 
-export const Header = ({ onSearchChange, onCreateClick }: Props) => {
+export const Header = ({ onSearchChange }: Props) => {
   const { mode, toggleMode } = useThemeMode();
+  const { openModal } = useModal();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     onSearchChange(e.target.value);
@@ -56,7 +57,7 @@ export const Header = ({ onSearchChange, onCreateClick }: Props) => {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={onCreateClick}
+          onClick={() => openModal("create")}
         >
           New Report
         </Button>

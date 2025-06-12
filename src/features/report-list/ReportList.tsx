@@ -1,33 +1,23 @@
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { useReportContext } from "../../context/report/ReportContext";
 import { ReportCard } from "../../components/report-card/ReportCard";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { useDebounce } from "../../hooks/useDebounce";
-import type { Report } from "../../types/Report";
 
 interface Props {
   search: string;
-  onEditClick: (report: Report) => void;
 }
 
-export const ReportList = ({ search, onEditClick }: Props) => {
+export const ReportList = ({ search }: Props) => {
   const debouncedSearch = useDebounce(search, 300);
-  const { reports, deleteReport, loading } = useReportContext();
-
-  const handleEditClick = useCallback((report: Report) => {
-    onEditClick(report);
-  }, []);
-
-  const handleSummarize = useCallback((report: any) => {
-    console.log("Summarize:", report);
-  }, []);
+  const { reports, loading } = useReportContext();
 
   const filteredReports = useMemo(() => {
     if (!debouncedSearch.trim()) return reports;
 
     const query = debouncedSearch.trim().toLowerCase();
 
-    return reports.filter((report) =>
+    return reports?.filter((report) =>
       report.title.toLowerCase().includes(query)
     );
   }, [reports, debouncedSearch]);
@@ -57,12 +47,7 @@ export const ReportList = ({ search, onEditClick }: Props) => {
         <Grid container spacing={2}>
           {filteredReports?.map((report) => (
             <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }} key={report.id}>
-              <ReportCard
-                report={report}
-                onEdit={handleEditClick}
-                onDelete={deleteReport}
-                onSummarize={handleSummarize}
-              />
+              <ReportCard report={report} />
             </Grid>
           ))}
         </Grid>
