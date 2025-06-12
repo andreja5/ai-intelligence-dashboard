@@ -16,7 +16,7 @@ const INIT_KEY = "reportsInitialized";
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
 
 export const ReportProvider = ({ children }: { children: ReactNode }) => {
-  const [reports, setReports] = useState<Report[]>([]);
+  const [reports, setReports] = useState<Report[] | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   const addReport = useCallback((report: Omit<Report, "id" | "createdAt">) => {
@@ -27,7 +27,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     };
 
     setReports((prev) => {
-      const updated = [...prev, newReport];
+      const updated = [...(prev ?? []), newReport];
       localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
       return updated;
     });
@@ -35,13 +35,13 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
 
   const updateReport = useCallback((id: string, updates: Partial<Report>) => {
     setReports((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, ...updates } : r))
+      prev?.map((r) => (r.id === id ? { ...r, ...updates } : r))
     );
   }, []);
 
   const deleteReport = useCallback((id: string) => {
     setReports((prev) => {
-      const updated = prev.filter((r) => r.id !== id);
+      const updated = prev?.filter((r) => r.id !== id);
       localStorage.setItem("ai-dashboard-reports", JSON.stringify(updated));
 
       return updated;
@@ -50,13 +50,14 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
 
   const reorderReports = useCallback((ids: string[]) => {
     setReports((prev) =>
-      ids.map((id) => prev.find((r) => r.id === id)!).filter(Boolean)
+      ids.map((id) => prev?.find((r) => r.id === id)!).filter(Boolean)
     );
   }, []);
 
   const fetchReports = useCallback(async () => {
     // Improvements: Add caching
     setLoading(true);
+
     try {
       const stored = localStorage.getItem(LOCAL_KEY);
       const isInitialized = localStorage.getItem(INIT_KEY) === "true";

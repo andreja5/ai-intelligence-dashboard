@@ -45,7 +45,7 @@ export const ReportList = ({ search }: Props) => {
         <Box width="100%" display="flex" justifyContent="center" mt={4}>
           <CircularProgress />
         </Box>
-      ) : filteredReports.length === 0 ? (
+      ) : filteredReports?.length === 0 ? (
         <Box width="100%" display="flex" justifyContent="center" mt={4}>
           <Typography variant="h6" color="textSecondary">
             No reports found
@@ -53,7 +53,7 @@ export const ReportList = ({ search }: Props) => {
         </Box>
       ) : (
         <Grid container spacing={2}>
-          {filteredReports.map((report) => (
+          {filteredReports?.map((report) => (
             <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }} key={report.id}>
               <ReportCard
                 report={report}
