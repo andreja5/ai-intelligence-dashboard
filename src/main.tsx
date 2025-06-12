@@ -5,7 +5,7 @@ import App from "./App.tsx";
 import { ReportProvider } from "./context/report/ReportContext.tsx";
 import { ThemeModeProvider } from "./context/theme/ThemeContext.tsx";
 import { ModalProvider } from "./context/modal/ModalContext.tsx";
-import { ModalRenderer } from "./components/create-report-modal/partials/ModalWrapper.tsx";
+import ReportModal from "./components/report-modal/ReportModal.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -13,7 +13,7 @@ createRoot(document.getElementById("root")!).render(
       <ModalProvider>
         <ReportProvider>
           <App />
-          <ModalRenderer />
+          <ReportModal />
         </ReportProvider>
       </ModalProvider>
     </ThemeModeProvider>
