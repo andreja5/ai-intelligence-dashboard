@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -9,6 +10,7 @@ import {
   createTheme,
   ThemeProvider as MuiThemeProvider,
   CssBaseline,
+  useMediaQuery,
 } from "@mui/material";
 
 type Mode = "light" | "dark";
@@ -17,6 +19,8 @@ interface ThemeContextType {
   mode: Mode;
   toggleMode: () => void;
 }
+
+const THEME_KEY = "preferred-theme";
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -30,7 +34,19 @@ export const useThemeMode = () => {
 };
 
 export const ThemeModeProvider = ({ children }: { children: ReactNode }) => {
-  const [mode, setMode] = useState<Mode>("light");
+  const systemPrefersDark = useMediaQuery("(prefers-color-scheme: dark)");
+
+  const getInitialMode = (): Mode => {
+    const stored = localStorage.getItem(THEME_KEY) as Mode | null;
+
+    return stored ?? (systemPrefersDark ? "dark" : "light");
+  };
+
+  const [mode, setMode] = useState<Mode>(getInitialMode);
+
+  useEffect(() => {
+    localStorage.setItem(THEME_KEY, mode);
+  }, [mode]);
 
   const toggleMode = () =>
     setMode((prev) => (prev === "light" ? "dark" : "light"));
