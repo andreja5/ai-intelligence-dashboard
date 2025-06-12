@@ -1,16 +1,35 @@
-import React, {
+import {
   createContext,
   useContext,
   useState,
   useCallback,
-  ReactNode,
+  type ReactNode,
 } from "react";
-import type { Report, ReportContextType } from "../types/Report";
+import type { Report, ReportContextType } from "../../types/Report";
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
 
 export const ReportProvider = ({ children }: { children: ReactNode }) => {
-  const [reports, setReports] = useState<Report[]>([]);
+  const [reports, setReports] = useState<Report[]>([
+    {
+      id: crypto.randomUUID(),
+      title: "First Sample Report",
+      content: "<p>This is a sample report content.</p>",
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: crypto.randomUUID(),
+      title: "Second Sample Report",
+      content: "<p>This is a second sample report content.</p>",
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: crypto.randomUUID(),
+      title: "Third Sample Report",
+      content: "<p>This is a third sample report content.</p>",
+      createdAt: new Date().toISOString(),
+    },
+  ]);
 
   const addReport = useCallback((report: Omit<Report, "id" | "createdAt">) => {
     setReports((prev) => [
