@@ -1,3 +1,5 @@
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+
 /**
  * API route handler for summarizing HTML content using OpenAI's GPT model.
  *
@@ -13,8 +15,6 @@
  * @throws 400 - If the `content` field is missing in the request body.
  * @throws 500 - If there is an error communicating with the OpenAI API or other internal errors.
  */
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const OPENAI_API_KEY = process.env.VITE_OPENAI_API_KEY;
 

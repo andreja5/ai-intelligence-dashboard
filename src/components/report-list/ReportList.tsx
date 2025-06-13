@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
 import { useReportContext } from "../../context/report/ReportContext";
 import { ReportCard } from "../../components/report-card/ReportCard";
 import { useMemo } from "react";
@@ -6,6 +6,9 @@ import { useDebounce } from "../../hooks/useDebounce";
 import { useSortableList } from "../../hooks/useSortableList";
 import { SortableItemWrapper } from "../../components/sortable-item-wrapper/SortableItemWrapper";
 import { DragOverlay } from "@dnd-kit/core";
+import AddIcon from "@mui/icons-material/Add";
+import { useUser } from "../../context/user/UserContext";
+import { useModal } from "../../context/modal/ModalContext";
 
 const LOCAL_KEY =
   import.meta.env.VITE_LOCAL_STORAGE_KEY || "ai-dashboard-reports";
@@ -28,6 +31,9 @@ interface Props {
  * @returns {JSX.Element} The rendered report list component.
  */
 export const ReportList = ({ search }: Props) => {
+  const { isViewer } = useUser();
+  const { openModal } = useModal();
+
   const debouncedSearch = useDebounce(search, 300);
   const { reports, loading, setReports } = useReportContext();
 
@@ -57,15 +63,37 @@ export const ReportList = ({ search }: Props) => {
 
   return (
     <Box sx={{ flexGrow: 1, py: 4, px: 2 }}>
-      <Typography
-        variant="h4"
-        fontWeight={600}
-        marginBottom={4}
-        textAlign={"center"}
-        textTransform={"uppercase"}
+      <Box
+        mb={4}
+        pl={4}
+        pr={4}
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
       >
-        ALL Reports
-      </Typography>
+        <Typography
+          variant="h4"
+          fontWeight={600}
+          textAlign={"center"}
+          textTransform={"uppercase"}
+        >
+          ALL Reports
+        </Typography>
+
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          disabled={isViewer}
+          onClick={() =>
+            openModal("generateDraft", {
+              prompt: "Give me some ideas for a new report",
+            })
+          }
+        >
+          Generate Draft Report
+        </Button>
+      </Box>
       {loading ? (
         <Box width="100%" display="flex" justifyContent="center" mt={4}>
           <CircularProgress />

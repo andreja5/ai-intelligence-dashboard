@@ -5,10 +5,10 @@ import App from "./App.tsx";
 import { ReportProvider } from "./context/report/ReportContext.tsx";
 import { ThemeModeProvider } from "./context/theme/ThemeContext.tsx";
 import { ModalProvider } from "./context/modal/ModalContext.tsx";
-import ReportModal from "./components/report-modal/ReportModal.tsx";
 import { ToastProvider } from "./context/notifications/ToastContext.tsx";
 import { UserProvider } from "./context/user/UserContext.tsx";
 import { ActivityProvider } from "./context/activity/ActivityContext.tsx";
+import { ModalRenderer } from "./features/modal/ModalRenderer.tsx";
 
 /**
  * Main entry point for the React application.
@@ -25,7 +25,7 @@ createRoot(document.getElementById("root")!).render(
             <ToastProvider>
               <ReportProvider>
                 <App />
-                <ReportModal />
+                <ModalRenderer />
               </ReportProvider>
             </ToastProvider>
           </ModalProvider>

@@ -1,15 +1,27 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+  type ReactNode,
+} from "react";
+import type { ModalDataMap, ModalType } from "../../types/ModalDataMap";
 import type { Report } from "../../types/Report";
-
-type ModalType = "create" | "edit" | null;
+import { mockData } from "../../mocks/mockModalData";
 
 interface ModalContextValue {
-  openModal: (type: ModalType, payload?: Report) => void;
+  openModal: <T extends ModalType>(type: T, payload?: ModalDataMap[T]) => void;
   closeModal: () => void;
-  modalType: ModalType;
-  modalData?: Report;
+  modalType: ModalType | null;
+  modalData?: ModalDataMap[ModalType];
   isOpen: boolean;
 }
+
+type ModalState =
+  | { type: null; data?: undefined }
+  | { type: "create"; data?: undefined }
+  | { type: "edit"; data: Report }
+  | { type: "generateDraft"; data: { prompt: string } };
 
 const ModalContext = createContext<ModalContextValue | undefined>(undefined);
 
@@ -21,24 +33,32 @@ const ModalContext = createContext<ModalContextValue | undefined>(undefined);
  * @returns {JSX.Element} The ModalProvider component.
  */
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
-  const [modalType, setModalType] = useState<ModalType>(null);
-  const [modalData, setModalData] = useState<Report | undefined>(undefined);
+  const [state, setState] = useState<ModalState>({ type: null });
 
-  const openModal = (type: ModalType, payload?: Report) => {
-    setModalType(type);
-    setModalData(payload);
-  };
+  const openModal = useCallback(
+    <T extends ModalType>(type: T, payload?: ModalDataMap[T]) => {
+      const data = payload ?? mockData[type];
+
+      setState({ type, data } as ModalState);
+    },
+    []
+  );
 
   const closeModal = () => {
-    setModalType(null);
-    setModalData(undefined);
+    setState({ type: null });
   };
 
-  const isOpen = modalType !== null;
+  const isOpen = state.type !== null;
 
   return (
     <ModalContext.Provider
-      value={{ modalType, modalData, openModal, closeModal, isOpen }}
+      value={{
+        modalType: state.type,
+        modalData: state.data,
+        openModal,
+        closeModal,
+        isOpen,
+      }}
     >
       {children}
     </ModalContext.Provider>
