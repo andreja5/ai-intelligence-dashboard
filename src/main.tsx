@@ -8,20 +8,23 @@ import { ModalProvider } from "./context/modal/ModalContext.tsx";
 import ReportModal from "./components/report-modal/ReportModal.tsx";
 import { ToastProvider } from "./context/notifications/ToastContext.tsx";
 import { UserProvider } from "./context/user/UserContext.tsx";
+import { ActivityProvider } from "./context/activity/ActivityContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <UserProvider>
-      <ThemeModeProvider>
-        <ModalProvider>
-          <ToastProvider>
-            <ReportProvider>
-              <App />
-              <ReportModal />
-            </ReportProvider>
-          </ToastProvider>
-        </ModalProvider>
-      </ThemeModeProvider>
+      <ActivityProvider>
+        <ThemeModeProvider>
+          <ModalProvider>
+            <ToastProvider>
+              <ReportProvider>
+                <App />
+                <ReportModal />
+              </ReportProvider>
+            </ToastProvider>
+          </ModalProvider>
+        </ThemeModeProvider>
+      </ActivityProvider>
     </UserProvider>
   </StrictMode>
 );

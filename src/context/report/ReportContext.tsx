@@ -12,7 +12,9 @@ import { initializeSampleReports } from "../../utils/initReports";
 import { mockFetchReports } from "../../utils/mockFetch";
 import { useToast } from "../notifications/ToastContext";
 import { getErrorMessage } from "../../utils/getErrorMessage";
+import { useActivity } from "../activity/ActivityContext";
 
+// Do not need to be saved in .env file, cause they are visible anyway in the browser, just for convenience
 const LOCAL_KEY =
   import.meta.env.VITE_LOCAL_STORAGE_KEY || "ai-dashboard-reports";
 const INIT_KEY =
@@ -32,6 +34,7 @@ const ReportContext = createContext<ReportContextType | undefined>(undefined);
 export const ReportProvider = ({ children }: { children: ReactNode }) => {
   const [reports, setReports] = useState<Report[] | undefined>(undefined);
   const [loading, setLoading] = useState(false);
+  const { logActivity } = useActivity();
 
   const { showToast } = useToast();
 
@@ -67,6 +70,8 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
         // Update state and localStorage
         setReports(updated);
 
+        logActivity("summarize", id, { summary });
+
         localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
       } catch (error) {
         const errorMessage = getErrorMessage(error);
@@ -80,20 +85,28 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const addReport = useCallback((report: Omit<Report, "id" | "createdAt">) => {
+    const newId = crypto.randomUUID();
+
     const newReport: Report = {
       ...report,
-      id: crypto.randomUUID(),
+      id: newId,
       createdAt: new Date().toISOString(),
     };
 
+    logActivity("create", newId);
+
     setReports((prev) => {
       const updated = [...(prev ?? []), newReport];
+
       localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
+
       return updated;
     });
   }, []);
 
   const updateReport = useCallback((updatedReport: Report) => {
+    logActivity("edit", updatedReport.id);
+
     setReports((prevReports) => {
       if (!prevReports) return prevReports;
 
