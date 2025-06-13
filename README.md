@@ -1,6 +1,6 @@
 # AI-Enhanced Intelligence Dashboard
 
-# A modern React + TypeScript dashboard that allows users to create, edit, and organize reports, with AI-enhanced features like content summarization and draft generation.
+# Dashboard that allows users to create, edit, and organize reports, with AI-enhanced features like content summarization and draft generation.
 
 # React + TypeScript + Vite
 
@@ -19,6 +19,7 @@ Currently, two official plugins are available:
 - OpenAI API (via serverless function)
 - Material UI (MUI)
 - Vite
+- Vercel
 
 ## ⚙️ Setup Instructions
 
@@ -33,7 +34,8 @@ npm install
 ## Create .env file
 
 ```
-OPENAI_API_KEY=your_openai_key_here
+VITE_OPENAI_API_KEY=your_openai_key_here
+VITE_API_URL=http://localhost:3001
 ```
 
 ## Run the development server
