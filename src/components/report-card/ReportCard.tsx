@@ -22,6 +22,21 @@ interface Props {
   collapsedHeight?: number; // Height of the card when collapsed
 }
 
+/**
+ * ReportCard component displays a summary card for a given report.
+ *
+ * Features:
+ * - Shows the report title and a preview of its content (with HTML sanitized).
+ * - Truncates content preview if it exceeds a specified character limit, with "Read More"/"Show Less" toggle.
+ * - Provides action buttons for editing, summarizing, and deleting the report.
+ * - Displays the report's creation date.
+ *
+ * @param report - The report object to display.
+ * @param maxPreviewChars - Optional. Maximum number of characters to show before truncating content. Defaults to 20.
+ * @param collapsedHeight - Optional. Height of the card when collapsed. Defaults to 80.
+ *
+ * @returns A Material-UI Card component representing the report.
+ */
 export const ReportCard = ({
   report,
   maxPreviewChars = 20,
@@ -31,12 +46,19 @@ export const ReportCard = ({
   const cleanHTML = DOMPurify.sanitize(report.content);
 
   const { openModal } = useModal();
-  const { deleteReport, summarizeReport } = useReportContext();
+  const { deleteReport, summarizeReport, setLoading } = useReportContext();
 
   const textOnly =
     new DOMParser().parseFromString(cleanHTML, "text/html").body.textContent ||
     "";
   const shouldTruncate = textOnly.length > maxPreviewChars;
+
+  const handleSummarize = async () => {
+    setLoading(true);
+
+    await summarizeReport(report.id);
+    setLoading(false);
+  };
 
   return (
     <Card
@@ -97,7 +119,7 @@ export const ReportCard = ({
           <IconButton onClick={() => openModal("edit", report)}>
             <EditIcon />
           </IconButton>
-          <IconButton onClick={() => summarizeReport(report.id)}>
+          <IconButton onClick={handleSummarize}>
             <SummarizeIcon />
           </IconButton>
           <IconButton onClick={() => deleteReport(report.id)}>

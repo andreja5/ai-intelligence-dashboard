@@ -9,22 +9,71 @@ import {
 import type { Report, ReportContextType } from "../../types/Report";
 import { initializeSampleReports } from "../../utils/initReports";
 import { mockFetchReports } from "../../utils/mockFetch";
+import { useToast } from "../notifications/ToastContext";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 const LOCAL_KEY =
   import.meta.env.VITE_LOCAL_STORAGE_KEY || "ai-dashboard-reports";
 const INIT_KEY =
   import.meta.env.VITE_LOCAL_STORAGE_INIT_KEY ||
   "ai-dashboard-reports-initialized";
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
 
+/**
+ * ReportProvider component provides a context for managing reports.
+ * It handles fetching, adding, updating, deleting, and summarizing reports.
+ *
+ * @param {ReactNode} children - The child components to be wrapped by the provider.
+ * @returns {JSX.Element} The ReportProvider component.
+ */
 export const ReportProvider = ({ children }: { children: ReactNode }) => {
   const [reports, setReports] = useState<Report[] | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
-  const summarizeReport = useCallback((id: string) => {
-    // trigger summary logic here or in modal
-  }, []);
+  const { showToast } = useToast();
+
+  const summarizeReport = useCallback(
+    async (id: string) => {
+      const target = reports?.find((r) => r.id === id);
+
+      if (!target) return;
+
+      try {
+        // Call API to summarize content
+        const res = await fetch(`${VITE_API_URL}/api/summarize`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: target.content }),
+        });
+
+        const data = await res.json();
+
+        if (data.error) {
+          throw new Error(data.error || "Failed to summarize content");
+        }
+
+        const summary =
+          data.choices?.[0]?.message?.content || "No summary available.";
+
+        // Update the specific report
+        const updated = reports?.map((r) =>
+          r.id === id ? { ...r, summary } : r
+        );
+
+        // Update state and localStorage
+        setReports(updated);
+
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
+      } catch (error) {
+        const errorMessage = getErrorMessage(error);
+
+        showToast(errorMessage);
+      }
+    },
+    [reports]
+  );
 
   const addReport = useCallback((report: Omit<Report, "id" | "createdAt">) => {
     const newReport: Report = {
@@ -63,14 +112,8 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
-  const reorderReports = useCallback((ids: string[]) => {
-    setReports((prev) =>
-      ids.map((id) => prev?.find((r) => r.id === id)!).filter(Boolean)
-    );
-  }, []);
-
+  // Improvements: Add caching
   const fetchReports = useCallback(async () => {
-    // Improvements: Add caching
     setLoading(true);
 
     try {
@@ -91,7 +134,9 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
         setReports(fetchedReports);
       }
     } catch (error) {
-      console.error("Failed to fetch reports:", error);
+      const errorMessage = getErrorMessage(error);
+
+      console.error("Failed to fetch reports:", errorMessage);
     } finally {
       setLoading(false);
     }
@@ -105,10 +150,10 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     loading,
     reports,
     addReport,
+    setLoading,
     setReports,
     updateReport,
     deleteReport,
-    reorderReports,
     fetchReports,
     summarizeReport,
   };

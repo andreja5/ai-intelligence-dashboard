@@ -11,7 +11,7 @@ export interface ReportContextType {
   deleteReport: (id: string) => void;
   summarizeReport: (id: string) => void;
   updateReport: (report: Report) => void;
-  reorderReports: (ids: string[]) => void;
+  setLoading: (loading: boolean) => void;
   setReports: (reports: Report[]) => void;
   addReport: (report: Omit<Report, "id" | "createdAt">) => void;
 }
