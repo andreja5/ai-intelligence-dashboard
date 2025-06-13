@@ -48,7 +48,7 @@ export const ReportCard = ({
 
   const { openModal } = useModal();
   const { deleteReport, summarizeReport, setLoading } = useReportContext();
-  const { user } = useUser();
+  const { isViewer } = useUser();
 
   const textOnly =
     new DOMParser().parseFromString(cleanHTML, "text/html").body.textContent ||
@@ -119,19 +119,16 @@ export const ReportCard = ({
       <CardActions sx={{ justifyContent: "space-between" }}>
         <Box sx={{ minWidth: "fit-content" }}>
           <IconButton
-            disabled={user.role === "viewer"}
+            disabled={isViewer}
             onClick={() => openModal("edit", report)}
           >
             <EditIcon />
           </IconButton>
-          <IconButton
-            disabled={user.role === "viewer"}
-            onClick={handleSummarize}
-          >
+          <IconButton disabled={isViewer} onClick={handleSummarize}>
             <SummarizeIcon />
           </IconButton>
           <IconButton
-            disabled={user.role === "viewer"}
+            disabled={isViewer}
             onClick={() => deleteReport(report.id)}
           >
             <DeleteIcon />

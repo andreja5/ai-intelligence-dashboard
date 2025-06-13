@@ -30,7 +30,7 @@ interface Props {
  * @returns {JSX.Element} The rendered header component.
  */
 export const Header = ({ onSearchChange }: Props) => {
-  const { user } = useUser();
+  const { isViewer } = useUser();
   const { openModal } = useModal();
   const { mode, toggleMode } = useThemeMode();
 
@@ -74,7 +74,7 @@ export const Header = ({ onSearchChange }: Props) => {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          disabled={user.role === "viewer"}
+          disabled={isViewer}
           onClick={() => openModal("create")}
         >
           Create
