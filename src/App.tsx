@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Container } from "@mui/material";
-import { ReportList } from "./features/report-list/ReportList";
+import { ReportList } from "./components/report-list/ReportList";
 import { Header } from "./components/header/Header";
 import { RoleSwitcher } from "./components/role-switcher/RoleSwitcher";
 
