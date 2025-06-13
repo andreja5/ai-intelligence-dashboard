@@ -85,7 +85,9 @@ src/
 │
 ├── components/
 ├── context/
+├── features/
 ├── hooks/
+├── mocks/
 |-- pages/          # didn't created any page cause it was not required but this would be the structure
 ├── types/
 ├── utils/
