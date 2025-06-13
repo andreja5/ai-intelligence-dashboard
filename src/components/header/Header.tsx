@@ -17,6 +17,17 @@ interface Props {
   onSearchChange: (value: string) => void;
 }
 
+/**
+ * Header component
+ *
+ * Displays the dashboard title, a search input, a button to create a new report,
+ * and a theme toggle button (light/dark mode).
+ *
+ * @param {object} props - Component props.
+ * @param {(value: string) => void} props.onSearchChange - Callback fired when the search input value changes.
+ *
+ * @returns {JSX.Element} The rendered header component.
+ */
 export const Header = ({ onSearchChange }: Props) => {
   const { mode, toggleMode } = useThemeMode();
   const { openModal } = useModal();

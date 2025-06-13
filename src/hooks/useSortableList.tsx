@@ -20,6 +20,13 @@ type UseSortableListProps<T> = {
   onReorder: (newItems: T[]) => void;
 };
 
+/**
+ * useSortableList hook provides drag-and-drop sorting functionality for a list of items.
+ * It uses DnD Kit to manage the drag-and-drop context and sortable items.
+ *
+ * @param {UseSortableListProps<T>} props - The properties for the sortable list.
+ * @returns {Object} An object containing the DndWrapper component and the active item ID.
+ */
 export function useSortableList<T>({
   items,
   getId,

@@ -3,6 +3,17 @@ import { CSS } from "@dnd-kit/utilities";
 import { Box } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
+/**
+ * SortableItemWrapper component
+ *
+ * This component wraps sortable items in a drag-and-drop interface.
+ * It provides a drag handle and styles for the sortable item.
+ *
+ * @param {string} id - The unique identifier for the sortable item.
+ * @param {React.ReactNode} children - The content to be displayed inside the sortable item.
+ *
+ * @returns {JSX.Element} The rendered sortable item with drag handle.
+ */
 export const SortableItemWrapper = ({
   id,
   children,

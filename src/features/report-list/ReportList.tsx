@@ -14,6 +14,19 @@ interface Props {
   search: string;
 }
 
+/**
+ * Displays a list of reports with search and drag-and-drop sorting functionality.
+ *
+ * - Filters reports based on the provided search string (debounced).
+ * - Allows reordering of reports via drag-and-drop, persisting the new order to localStorage.
+ * - Shows loading indicator while reports are being fetched.
+ * - Displays a message if no reports match the search criteria.
+ *
+ * @param {Object} props - Component props.
+ * @param {string} props.search - The search query used to filter reports.
+ *
+ * @returns {JSX.Element} The rendered report list component.
+ */
 export const ReportList = ({ search }: Props) => {
   const debouncedSearch = useDebounce(search, 300);
   const { reports, loading, setReports } = useReportContext();

@@ -8,6 +8,14 @@ interface MyEditorProps {
   setContent: (content: string) => void;
 }
 
+/**
+ * A React component that wraps the TinyMCE rich text editor and integrates with MUI's theme.
+ *
+ * @param content - The current HTML content of the editor.
+ * @param setContent - Callback function to update the editor's content.
+ *
+ * The editor supports dark and light themes based on the MUI theme, and includes plugins for links, lists, code, and templates.
+ */
 const MyEditor = ({ content, setContent }: MyEditorProps) => {
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === "dark";

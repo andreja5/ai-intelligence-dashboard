@@ -11,6 +11,17 @@ import { useReportContext } from "../../context/report/ReportContext";
 import MyEditor from "../my-editor/MyEditor";
 import { useModal } from "../../context/modal/ModalContext";
 
+/**
+ * ReportModal component for creating or editing reports.
+ *
+ * Features:
+ * - Displays a dialog with a form to input report title and content.
+ * - Uses a rich text editor for content input.
+ * - Handles both creation of new reports and editing existing ones.
+ * - Validates that the title is not empty before submission.
+ *
+ * @returns {JSX.Element} The rendered modal component.
+ */
 const ReportModal = () => {
   const { modalType, modalData, isOpen, closeModal } = useModal();
   const { addReport, updateReport } = useReportContext();

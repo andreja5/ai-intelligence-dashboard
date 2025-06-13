@@ -163,6 +163,12 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+/**
+ * useReportContext is a custom hook that provides access to the report context.
+ *
+ * @returns The current report context.
+ * @throws Will throw an error if used outside of ReportProvider.
+ */
 export const useReportContext = (): ReportContextType => {
   const context = useContext(ReportContext);
 

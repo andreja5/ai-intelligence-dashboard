@@ -33,6 +33,13 @@ export const useThemeMode = () => {
   return context;
 };
 
+/**
+ * ThemeModeProvider component provides a context for managing the theme mode (light/dark).
+ * It uses Material-UI's ThemeProvider to apply the theme globally.
+ *
+ * @param {ReactNode} children - The child components to be wrapped by the provider.
+ * @returns {JSX.Element} The ThemeModeProvider component.
+ */
 export const ThemeModeProvider = ({ children }: { children: ReactNode }) => {
   const systemPrefersDark = useMediaQuery("(prefers-color-scheme: dark)");
 

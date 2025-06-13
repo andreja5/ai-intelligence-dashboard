@@ -1,5 +1,10 @@
 import type { Report } from "../types/Report";
 
+/**
+ * initializeSampleReports function creates an array of sample reports.
+ *
+ * @returns An array of sample reports with unique IDs and current timestamps.
+ */
 export const initializeSampleReports = (): Report[] => {
   return [
     {
