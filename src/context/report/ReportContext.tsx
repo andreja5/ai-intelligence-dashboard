@@ -37,6 +37,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
 
   const summarizeReport = useCallback(
     async (id: string) => {
+      setLoading(true);
       const target = reports?.find((r) => r.id === id);
 
       if (!target) return;
@@ -71,6 +72,8 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
         const errorMessage = getErrorMessage(error);
 
         showToast(errorMessage);
+      } finally {
+        setLoading(false);
       }
     },
     [reports]

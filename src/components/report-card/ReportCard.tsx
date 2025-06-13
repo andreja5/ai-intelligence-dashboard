@@ -47,20 +47,13 @@ export const ReportCard = ({
   const cleanHTML = DOMPurify.sanitize(report.content);
 
   const { openModal } = useModal();
-  const { deleteReport, summarizeReport, setLoading } = useReportContext();
+  const { deleteReport, summarizeReport } = useReportContext();
   const { isViewer } = useUser();
 
   const textOnly =
     new DOMParser().parseFromString(cleanHTML, "text/html").body.textContent ||
     "";
   const shouldTruncate = textOnly.length > maxPreviewChars;
-
-  const handleSummarize = async () => {
-    setLoading(true);
-
-    await summarizeReport(report.id);
-    setLoading(false);
-  };
 
   return (
     <Card
@@ -124,7 +117,10 @@ export const ReportCard = ({
           >
             <EditIcon />
           </IconButton>
-          <IconButton disabled={isViewer} onClick={handleSummarize}>
+          <IconButton
+            disabled={isViewer}
+            onClick={() => summarizeReport(report.id)}
+          >
             <SummarizeIcon />
           </IconButton>
           <IconButton
