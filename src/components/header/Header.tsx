@@ -12,6 +12,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { useThemeMode } from "../../context/theme/ThemeContext";
 import { useModal } from "../../context/modal/ModalContext";
+import { useUser } from "../../context/user/UserContext";
 
 interface Props {
   onSearchChange: (value: string) => void;
@@ -29,8 +30,9 @@ interface Props {
  * @returns {JSX.Element} The rendered header component.
  */
 export const Header = ({ onSearchChange }: Props) => {
-  const { mode, toggleMode } = useThemeMode();
+  const { user } = useUser();
   const { openModal } = useModal();
+  const { mode, toggleMode } = useThemeMode();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     onSearchChange(e.target.value);
@@ -47,7 +49,11 @@ export const Header = ({ onSearchChange }: Props) => {
         flexDirection: { xs: "column", sm: "row" },
       }}
     >
-      <Typography variant="h4" fontWeight={600}>
+      <Typography
+        variant="h4"
+        fontWeight={600}
+        textAlign={{ xs: "center", lg: "left" }}
+      >
         Intelligence Dashboard
       </Typography>
 
@@ -68,9 +74,10 @@ export const Header = ({ onSearchChange }: Props) => {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
+          disabled={user.role === "viewer"}
           onClick={() => openModal("create")}
         >
-          New Report
+          Create
         </Button>
 
         <IconButton onClick={toggleMode}>

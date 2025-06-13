@@ -15,6 +15,7 @@ import { useState } from "react";
 import DOMPurify from "dompurify";
 import { useReportContext } from "../../context/report/ReportContext";
 import { useModal } from "../../context/modal/ModalContext";
+import { useUser } from "../../context/user/UserContext";
 
 interface Props {
   report: Report;
@@ -47,6 +48,7 @@ export const ReportCard = ({
 
   const { openModal } = useModal();
   const { deleteReport, summarizeReport, setLoading } = useReportContext();
+  const { user } = useUser();
 
   const textOnly =
     new DOMParser().parseFromString(cleanHTML, "text/html").body.textContent ||
@@ -116,13 +118,22 @@ export const ReportCard = ({
 
       <CardActions sx={{ justifyContent: "space-between" }}>
         <Box sx={{ minWidth: "fit-content" }}>
-          <IconButton onClick={() => openModal("edit", report)}>
+          <IconButton
+            disabled={user.role === "viewer"}
+            onClick={() => openModal("edit", report)}
+          >
             <EditIcon />
           </IconButton>
-          <IconButton onClick={handleSummarize}>
+          <IconButton
+            disabled={user.role === "viewer"}
+            onClick={handleSummarize}
+          >
             <SummarizeIcon />
           </IconButton>
-          <IconButton onClick={() => deleteReport(report.id)}>
+          <IconButton
+            disabled={user.role === "viewer"}
+            onClick={() => deleteReport(report.id)}
+          >
             <DeleteIcon />
           </IconButton>
         </Box>

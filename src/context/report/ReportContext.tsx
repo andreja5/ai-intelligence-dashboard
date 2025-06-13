@@ -5,6 +5,7 @@ import {
   useCallback,
   type ReactNode,
   useEffect,
+  useMemo,
 } from "react";
 import type { Report, ReportContextType } from "../../types/Report";
 import { initializeSampleReports } from "../../utils/initReports";
@@ -146,17 +147,30 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     fetchReports();
   }, [fetchReports]);
 
-  const value = {
-    loading,
-    reports,
-    addReport,
-    setLoading,
-    setReports,
-    updateReport,
-    deleteReport,
-    fetchReports,
-    summarizeReport,
-  };
+  const value = useMemo(
+    () => ({
+      loading,
+      reports,
+      addReport,
+      setLoading,
+      setReports,
+      updateReport,
+      deleteReport,
+      fetchReports,
+      summarizeReport,
+    }),
+    [
+      loading,
+      reports,
+      addReport,
+      setLoading,
+      setReports,
+      updateReport,
+      deleteReport,
+      fetchReports,
+      summarizeReport,
+    ]
+  );
 
   return (
     <ReportContext.Provider value={value}>{children}</ReportContext.Provider>
